@@ -1,0 +1,102 @@
+@startuml
+' --- Styling for Cleanliness ---
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam nodesep 40
+skinparam ranksep 60
+left to right direction
+
+' --- Actors ---
+actor "Administrator" as Admin
+actor "Doctor" as Doc
+actor "Nurse" as Nurse
+actor "Caregiver" as CG
+actor "Family" as Family <<External>>
+actor "System" as Sys <<Service>>
+
+' === NEW: IoT Device actor (green highlight) ===
+actor "IoT Device" as IoT <<External>>
+
+' --- Force Vertical Alignment of Actors ---
+Admin -[hidden]d- Doc
+Doc -[hidden]d- Nurse
+Nurse -[hidden]d- CG
+
+rectangle "Resident Management System" {
+   
+    package "Admin & Security" {
+        usecase "Manage User Accounts" as UC1
+        usecase "Archive Residents" as UC2
+        usecase "Secure Login" as UC3
+        usecase "Automatic Logout" as UC4
+    }
+    package "Medical Management" {
+        usecase "Update Med History/Diagnosis" as UC6
+        usecase "Add Resident Profile" as UC5
+        usecase "Prescribe/Modify Medication" as UC9
+        usecase "Verify Medication" as UC11
+    }
+    package "Care & Monitoring" {
+        usecase "Record Vital Signs" as UC8
+        usecase "Log Med Administration" as UC10
+        usecase "Schedule Activities" as UC13
+        usecase "Log Attendance" as UC14
+    }
+    package "Alerts & Reports" {
+        usecase "Manage Emergency Alerts" as UC15
+        usecase "Generate/Export Reports" as UC17
+    }
+
+    ' === NEW: IoT Integration package (green highlight) ===
+    package "IoT Integration" {
+        usecase "Receive IoT Data" as UC18
+        usecase "Generate IoT Alert" as UC19
+        usecase "View IoT Dashboard" as UC20
+    }
+}
+
+' --- Strategic Connections (Minimizing Overlap) ---
+' Admin Section
+Admin --> UC1
+Admin --> UC2
+
+' Doctor Section
+Doc --> UC6
+Doc --> UC9
+Doc --> UC11
+Doc --> UC17
+
+' Nurse Section
+Nurse --> UC5
+Nurse --> UC9
+Nurse --> UC11
+Nurse --> UC8
+
+' Caregiver Section
+CG --> UC5
+CG --> UC8
+CG --> UC10
+CG --> UC13
+CG --> UC14
+
+' Shared / System
+Sys --> UC4
+UC15 <-d- Doc
+UC15 <-d- Nurse
+UC15 <-d- CG
+UC15 -r-> Family : "Notify"
+
+' === NEW: IoT Connections (green highlight) ===
+IoT --> UC18
+UC18 --> UC19
+UC19 ..> UC15 : <<extends>>
+UC18 --> UC20
+UC20 ..> UC17 : <<extends>>
+
+' New roles that can access the IoT Dashboard
+Nurse --> UC20
+Doc --> UC20
+Admin --> UC20
+
+@enduml
