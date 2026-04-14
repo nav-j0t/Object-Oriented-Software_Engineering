@@ -88,3 +88,15 @@ export const accessControl = {
     delete: [],
   },
 };
+
+
+
+Key Requirements Changes  ---->
+
+IoT Dashboard Access: A new iot_dashboard resource is defined. Following FR-25 and NFR-04, the ability to visualize automated sensor data trends is restricted to Administrators, Nurses, and Doctors.
+
+High-Risk Verification: The medications resource now includes a verify action. Per FR-21, any high-risk medication administration logged by a Caregiver must be electronically verified by a Nurse or Doctor.
+
+Resident Archiving: Permission to "delete" (archive) resident profiles is exclusively granted to the Administrator role to satisfy FR-07 data integrity requirements.
+
+Clinical Data Integrity: Per FR-06, while Caregivers and Nurses have read access to resident records, only Doctors are permitted to update diagnoses or medical histories.
